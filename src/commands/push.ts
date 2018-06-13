@@ -15,8 +15,9 @@ export async function gather(root = process.cwd()) {
 }
 
 function bytes(n: number): string {
-  const [num, suffix] = require('filesize')(n, {output: 'array'})
-  return num.toFixed(1) + ` ${suffix}`
+  return require('filesize')(n)
+  // const [num, suffix] = require('filesize')(n, {output: 'array'})
+  // return num.toFixed(1) + ` ${suffix}`
 }
 
 export async function filesize(...files: string[]) {
