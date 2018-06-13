@@ -11,7 +11,9 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^2",
     "aws-sdk": "^2.256.1",
+    "cli-ux": "^4.6.3",
     "mime-types": "^2.1.18",
+    "qqjs": "^0.3.10",
     "tslib": "^1"
   },
   "devDependencies": {
@@ -19,9 +21,12 @@
     "@oclif/test": "^1",
     "@oclif/tslint": "^1",
     "@types/chai": "^4",
+    "@types/execa": "^0.9.0",
+    "@types/glob": "^5.0.35",
     "@types/mime-types": "^2.1.0",
     "@types/mocha": "^5",
     "@types/node": "^10",
+    "@types/write-json-file": "^2.2.1",
     "chai": "^4",
     "globby": "^8",
     "mocha": "^5",
