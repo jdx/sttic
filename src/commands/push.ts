@@ -2,6 +2,7 @@ import {Command, flags} from '@oclif/command'
 import * as AWS from 'aws-sdk'
 import ux from 'cli-ux'
 import * as fs from 'fs-extra'
+import * as _ from 'lodash'
 import * as Mime from 'mime-types'
 import * as pMap from 'p-map'
 import * as qq from 'qqjs'
@@ -30,6 +31,7 @@ export async function filesize(...files: string[]) {
 export default class Push extends Command {
   static flags = {
     help: flags.help({char: 'h'}),
+    verbose: flags.boolean({char: 'v'}),
   }
 
   static args = [{name: 'target', required: true}]
@@ -74,11 +76,14 @@ export default class Push extends Command {
       }
     }
     await createWebsite()
-    const files = await gather()
+    const root = process.cwd()
+    const files = await gather(root)
     const maxSize = await filesize(...files)
+    const longestFilename = _.max(files.map(f => f.substr(root.length + 1).length))!
     let curSize = 0
     ux.action.start('Uploading files')
     const uploadFile = async (file: string) => {
+      this.log(`${file.substr(root.length + 1).padEnd(longestFilename)} ${bytes(await filesize(file))}`)
       await S3.upload({
         Bucket,
         Key: file,
