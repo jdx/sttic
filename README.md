@@ -18,11 +18,11 @@ statc
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g statc
+$ npm install -g sttic
 $ statc COMMAND
 running command...
 $ statc (-v|--version|version)
-statc/0.0.0 darwin-x64 node-v8.11.2
+sttic/0.0.1 darwin-x64 node-v8.11.2
 $ statc --help [COMMAND]
 USAGE
   $ statc COMMAND
@@ -31,28 +31,8 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`statc hello [FILE]`](#statc-hello-file)
 * [`statc help [COMMAND]`](#statc-help-command)
-
-## `statc hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ statc hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ statc hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/jdxcode/statc/blob/v0.0.0/src/commands/hello.ts)_
+* [`statc push TARGET`](#statc-push-target)
 
 ## `statc help [COMMAND]`
 
@@ -70,4 +50,16 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.0.5/src/commands/help.ts)_
+
+## `statc push TARGET`
+
+```
+USAGE
+  $ statc push TARGET
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [src/commands/push.ts](https://github.com/jdxcode/statc/blob/v0.0.1/src/commands/push.ts)_
 <!-- commandsstop -->
