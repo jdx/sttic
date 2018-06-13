@@ -1,8 +1,9 @@
 import {Command, flags} from '@oclif/command'
 import * as AWS from 'aws-sdk'
 import ux from 'cli-ux'
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import * as Mime from 'mime-types'
+import * as pMap from 'p-map'
 import * as qq from 'qqjs'
 
 AWS.config.apiVersion = '2006-03-01'
@@ -10,6 +11,20 @@ AWS.config.apiVersion = '2006-03-01'
 export async function gather(root = process.cwd()) {
   let files = await qq.globby(root)
   return files
+}
+
+function bytes(n: number): string {
+  const [num, suffix] = require('filesize')(n, {output: 'array'})
+  return num.toFixed(1) + ` ${suffix}`
+}
+
+export async function filesize(...files: string[]) {
+  let size = 0
+  for (let name of files) {
+    const fi = await fs.stat(name)
+    size += fi.size
+  }
+  return size
 }
 
 export default class Push extends Command {
@@ -50,6 +65,7 @@ export default class Push extends Command {
             IndexDocument: {Suffix: 'index.html'},
           },
         }).promise()
+        ux.action.stop()
       } catch (err) {
         if (err.code === 'NoSuchBucket') {
           await createBucket()
@@ -57,19 +73,25 @@ export default class Push extends Command {
         } else throw err
       }
     }
+    await createWebsite()
+    const files = await gather()
+    const maxSize = await filesize(...files)
+    let curSize = 0
+    ux.action.start('Uploading files')
     const uploadFile = async (file: string) => {
-      ux.action.start(`Uploading ${file}`)
       await S3.upload({
         Bucket,
         Key: file,
         Body: fs.createReadStream(file),
         ContentType: Mime.lookup(file) || undefined,
         ACL: 'public-read',
-      }).promise()
+      })
+      .on('httpUploadProgress', e => {
+        curSize += e.loaded
+        ux.action.status = `${bytes(curSize)}/${bytes(maxSize)}`
+      })
+      .promise()
     }
-    await createWebsite()
-    for (let file of await gather()) {
-      await uploadFile(file)
-    }
+    await pMap(files, uploadFile, {concurrency: 4})
   }
 }
